@@ -48,3 +48,8 @@ export const vkPairVector2Map = <K, V>(
   }
   return map;
 };
+
+export const fetchFile = async (url: string): Promise<ArrayBuffer> =>
+  typeof fetch === "function"
+    ? await (await fetch(url)).arrayBuffer()
+    : await (await import("fs/promises")).readFile(url);

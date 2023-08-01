@@ -6,18 +6,27 @@ import type {
 } from "./types";
 import type { FastTextOptions } from "./options";
 import { defaultOptions } from "./options";
-import { vkPairVector2Map } from "./utils";
+import { fetchFile, vkPairVector2Map } from "./utils";
+
+const TEMP_MODEL_PATH = "/_tmp_model.ftz";
 
 export class FastText {
+  /** Emscripten module */
   public core: FastTextModule;
-  private ft: FastTextCore;
+  /** Emscripten filesystem */
   public fs: Emscripten.FileSystem.FS;
+  private ft: FastTextCore;
   private constructor(core: FastTextModule) {
     this.core = core;
     this.fs = core.FS;
     this.ft = new core.FastText();
   }
 
+  /**
+   * Create a new FastText instance
+   * @param [options] init options
+   * @returns promise with a FastText instance
+   */
   public static async create(options: FastTextOptions) {
     const opt = { ...defaultOptions, ...options };
     const coreCtor = (
@@ -34,18 +43,40 @@ export class FastText {
     return new FastText(core);
   }
 
-  public loadModel(model: Uint8Array) {
-    const tmpModelPath = "/tmp_module.bin";
-    this.fs.writeFile(tmpModelPath, model);
-    this.ft.loadModel(tmpModelPath);
-    this.fs.unlink(tmpModelPath);
+  /**
+   * Load a fastText model
+   * @param [model] ArrayBuffer of model
+   */
+  public loadModel(model: ArrayBuffer): void;
+  public loadModel(model?: string): Promise<void>;
+  public loadModel(model: ArrayBuffer | string = "./model/lid.176.ftz") {
+    if (typeof model === "string")
+      return fetchFile(model).then((data) => this._loadModel(data));
+    else return this._loadModel(model);
   }
 
+  private _loadModel(model: ArrayBuffer): void {
+    this.fs.writeFile(TEMP_MODEL_PATH, model);
+    this.ft.loadModel(TEMP_MODEL_PATH);
+    this.fs.unlink(TEMP_MODEL_PATH);
+  }
+
+  /** Detect the most probable language
+   * @param text text to detect
+   * @returns two or three letter language code
+   */
   public detect(text: string) {
     return Array.from(this.predict(text, -1, 0))
       .sort((lang1, lang2) => lang2[1] - lang1[1])[0]![0]
       .slice(9);
   }
+
+  /** Same as predict method of fastText, return a Map of probability
+   *  @param text text to predict
+   *  @param [k] max number of return entries, use -1 to return all
+   *  @param [thresold] min possibility of return entries(0~1)
+   *  @returns Map of __lable__$(lang) => probability
+   */
   public predict(
     text: string,
     k: number = -1,
