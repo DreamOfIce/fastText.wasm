@@ -47,15 +47,17 @@ export class FastText {
    * Load a fastText model
    * @param [model] ArrayBuffer of model
    */
-  public loadModel(model: ArrayBuffer): void;
+  public loadModel(model: ArrayBufferView): void;
   public loadModel(model?: string): Promise<void>;
-  public loadModel(model: ArrayBuffer | string = "./model/lid.176.ftz") {
+  public loadModel(model: ArrayBufferView | string = "./model/lid.176.ftz") {
     if (typeof model === "string")
-      return fetchFile(model).then((data) => this._loadModel(data));
+      return fetchFile(new URL(model, import.meta.url).href).then((data) =>
+        this._loadModel(data),
+      );
     else return this._loadModel(model);
   }
 
-  private _loadModel(model: ArrayBuffer): void {
+  private _loadModel(model: ArrayBufferView): void {
     this.fs.writeFile(TEMP_MODEL_PATH, model);
     this.ft.loadModel(TEMP_MODEL_PATH);
     this.fs.unlink(TEMP_MODEL_PATH);

@@ -1,5 +1,8 @@
 import type { Pair, Vector } from "./types";
 
+let readFile: typeof import("node:fs/promises").readFile;
+let fileURLToPath: typeof import("node:url").fileURLToPath;
+
 /**
  * Convert std::vector to array
  * @param vector emscripten vector
@@ -49,7 +52,16 @@ export const vkPairVector2Map = <K, V>(
   return map;
 };
 
-export const fetchFile = async (url: string): Promise<ArrayBuffer> =>
-  typeof fetch === "function"
-    ? await (await fetch(url)).arrayBuffer()
-    : await (await import("fs/promises")).readFile(url);
+export const nodeBuffer2ArrayBuffer = (buf: Buffer) =>
+  buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.length);
+
+export const fetchFile = async (url: string): Promise<ArrayBufferView> =>
+  new Uint8Array(
+    typeof self !== "undefined" && globalThis === self
+      ? await (await fetch(url)).arrayBuffer()
+      : nodeBuffer2ArrayBuffer(
+          await (readFile ??= (await import("node:fs/promises")).readFile)(
+            (fileURLToPath ??= (await import("node:url")).fileURLToPath)(url),
+          ),
+        ),
+  );
