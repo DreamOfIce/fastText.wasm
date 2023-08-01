@@ -10,7 +10,7 @@ export const vector2Array = <T>(
   deleteAferConvert: boolean = false,
 ): Array<T> => {
   const arr: Array<T> = [];
-  for (let i = 0; i <= vector.size(); i++) {
+  for (let i = 0; i < vector.size(); i++) {
     arr.push(vector.get(i));
   }
   if (deleteAferConvert) vector.delete();

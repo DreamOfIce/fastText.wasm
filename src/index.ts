@@ -20,7 +20,9 @@ export class FastText {
 
   public static async create(options: FastTextOptions) {
     const opt = { ...defaultOptions, ...options };
-    const coreCtor = (await import(opt.corePath)) as FastTextModuleConstructor;
+    const coreCtor = (
+      (await import(opt.corePath)) as { default: FastTextModuleConstructor }
+    ).default;
     const core = await coreCtor({
       print: () => {
         /* empty */
@@ -39,10 +41,15 @@ export class FastText {
     this.fs.unlink(tmpModelPath);
   }
 
+  public detect(text: string) {
+    return Array.from(this.predict(text, -1, 0))
+      .sort((lang1, lang2) => lang2[1] - lang1[1])[0]![0]
+      .slice(9);
+  }
   public predict(
     text: string,
-    k: number,
-    thresold: number,
+    k: number = -1,
+    thresold: number = 0,
   ): Map<string, number> {
     return vkPairVector2Map(this.ft.predict(text, k, thresold), true);
   }

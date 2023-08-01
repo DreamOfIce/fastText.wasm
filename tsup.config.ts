@@ -9,7 +9,6 @@ export default defineConfig({
   entry: ["src/index.ts"],
   format: ["cjs", "esm", "iife"],
   dts: true,
-  clean: true,
   minifySyntax: true,
   // copy models
   onSuccess: async () => {
