@@ -1,0 +1,13 @@
+set_project("fasttext")
+set_defaultplat("wasm")
+add_rules("mode.debug", "mode.release")
+
+target("fasttext")
+    set_kind("binary")
+    add_files("core/src/*.cc")
+    add_files("core/webassembly/*.cc")
+    add_includedirs("core/src")
+    set_targetdir("$(scriptdir)/dist/core")
+    set_extension(".mjs")
+    add_links("embind")
+    add_ldflags("-sALLOW_MEMORY_GROWTH", "-sEXPORTED_RUNTIME_METHODS=[addOnPostRun,FS]", "-sFORCE_FILESYSTEM", "-sMODULARIZE", "-sEXPORT_ES6", "-sEXPORT_NAME=FastTextModule", "-sWASMFS", "-sNO_INVOKE_RUN")
