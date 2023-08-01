@@ -3,7 +3,7 @@
     "@tsconfig/node-lts/tsconfig.json",
     "@tsconfig/strictest/tsconfig.json"
   ],
-  "include": ["src/**/*", "tsup.config.ts"],
+  "include": ["src/**/*", "tests/**/*", "*.config.ts"],
   "compilerOptions": {
     "lib": ["dom"],
     "module": "ESNext",
