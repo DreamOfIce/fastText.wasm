@@ -1,4 +1,5 @@
 import type {
+  Emscripten,
   FastTextCore,
   FastTextModule,
   FastTextModuleConstructor,
@@ -10,7 +11,7 @@ import { vkPairVector2Map } from "./utils";
 export class FastText {
   public core: FastTextModule;
   private ft: FastTextCore;
-  public fs: typeof FS;
+  public fs: Emscripten.FileSystem.FS;
   private constructor(core: FastTextModule) {
     this.core = core;
     this.fs = core.FS;

@@ -1,3 +1,4 @@
+import type { Emscripten } from "./emscripten";
 import type { Pair, Vector } from "./misc";
 
 export interface FastTextCoreConstructor {
@@ -46,9 +47,10 @@ export interface Float32ArrayBridge {
   size: number;
 }
 
-export interface FastTextModule extends EmscriptenModule {
-  FS: typeof FS;
+export interface FastTextModule extends Emscripten.Module {
+  FS: Emscripten.FileSystem.FS;
   FastText: FastTextCoreConstructor;
 }
 
-export type FastTextModuleConstructor = EmscriptenModuleFactory<FastTextModule>;
+export type FastTextModuleConstructor =
+  Emscripten.ModuleFactory<FastTextModule>;
