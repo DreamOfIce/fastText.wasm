@@ -1,3 +1,9 @@
+## [1.0.1](https://github.com/DreamOfIce/fasttext.wasm/compare/1.0.0...1.0.1) (2023-08-02)
+
+### Bug Fixes
+
+- mark param `option` of FastText.create() as optional ([a74dcff](https://github.com/DreamOfIce/fasttext.wasm/commit/a74dcff70bf9971a297c9e1372fc31185d620e11))
+
 ## 1.0.0 (2023-08-02)
 
 ### Features

@@ -1,6 +1,6 @@
 {
   "name": "fasttext.wasm",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Webassembly version of fastText",
   "homepage": "https://github.com/DreamOfIce/fasttext.wasm#readme",
   "bugs": {
