@@ -6,7 +6,9 @@ const tests: Record<string, string> = {
   "你好, 世界！": "zh",
   "Hello, world!": "en",
   "Webassembly version of fastText": "en",
-  "乆乆乆, 一定是米哈游干的": "zh",
+  "乆乆乆, 一定是miHoYo干的": "zh",
+  可爱い: "ja",
+  "В день уныния смирись": "ru",
 };
 
 test("language detects", async () => {
