@@ -7,7 +7,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   entry: ["src/index.ts"],
-  format: ["cjs", "esm", "iife"],
+  format: ["cjs", "esm"],
   dts: true,
   minifySyntax: true,
   // copy models
@@ -20,5 +20,6 @@ export default defineConfig({
       );
     }
   },
+  shims: true,
   target: "node14",
 });
