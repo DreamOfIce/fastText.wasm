@@ -27,7 +27,7 @@ export class FastText {
    * @param [options] init options
    * @returns promise with a FastText instance
    */
-  public static async create(options: FastTextOptions) {
+  public static async create(options: FastTextOptions = {}) {
     const opt = { ...defaultOptions, ...options };
     const coreCtor = (
       (await import(opt.corePath)) as { default: FastTextModuleConstructor }
