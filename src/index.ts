@@ -34,7 +34,9 @@ export class FastText {
     ).default;
     const core = await coreCtor({
       locateFile: (url, prefix) =>
-        url.endsWith(".wasm") ? opt.wasmPath : `${prefix}${url}`,
+        opt.wasmPath && url.endsWith(".wasm")
+          ? opt.wasmPath
+          : `${prefix}${url}`,
       print: () => {
         /* empty */
       },

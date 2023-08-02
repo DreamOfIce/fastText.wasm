@@ -1,9 +1,9 @@
 export interface FastTextOptions {
   corePath?: string;
-  wasmPath?: string;
+  wasmPath?: string | undefined;
 }
 
 export const defaultOptions: Required<FastTextOptions> = {
   corePath: "./core/fasttext.mjs",
-  wasmPath: "./core/fasttext.wasm",
+  wasmPath: undefined,
 };

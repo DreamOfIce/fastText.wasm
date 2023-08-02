@@ -56,6 +56,7 @@ export const vkPairVector2Map = <K, V>(
   }
   return map;
 };
+
 export const buffer2Uin8Array = (buf: Buffer) =>
   new Uint8Array(buf.buffer, buf.byteOffset, buf.length);
 
