@@ -1,8 +1,7 @@
-import { join } from "node:path";
 import { expect, test } from "vitest";
 import { FastText } from "../src";
+import { corePath, modelPath } from "./utils";
 
-const root = join(__dirname, "..");
 const tests: Record<string, string> = {
   "你好, 世界！": "zh",
   "Hello, world!": "en",
@@ -12,9 +11,9 @@ const tests: Record<string, string> = {
 
 test("language detects", async () => {
   const fastText = await FastText.create({
-    corePath: join(root, "dist", "core", "fasttext.mjs"),
+    corePath,
   });
-  await fastText.loadModel(join(root, "model", "lid.176.ftz"));
+  await fastText.loadModel(modelPath);
   for (const [text, lang] of Object.entries(tests)) {
     expect(fastText.detect(text)).toBe(lang);
   }
