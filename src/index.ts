@@ -33,6 +33,8 @@ export class FastText {
       (await import(opt.corePath)) as { default: FastTextModuleConstructor }
     ).default;
     const core = await coreCtor({
+      locateFile: (url, prefix) =>
+        url.endsWith(".wasm") ? opt.wasmPath : `${prefix}${url}`,
       print: () => {
         /* empty */
       },
