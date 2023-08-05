@@ -35,7 +35,13 @@ export namespace Emscripten {
     async?: boolean | undefined;
   }
 
-  export interface Module {
+  export type Module<R extends keyof RuntimeMethods = never> = Pick<
+    RuntimeMethods,
+    R
+  > &
+    ModuleMethods;
+
+  export interface ModuleMethods {
     print(str: string): void;
     printErr(str: string): void;
     arguments: string[];
@@ -284,106 +290,83 @@ export namespace Emscripten {
     ? null
     : StringToType<Exclude<R, null>>;
 
-  export namespace RuntimeMethods {
-    export type cwrap<
+  export interface RuntimeMethods {
+    cwrap<
       I extends Array<Emscripten.JSType | null> | [],
       R extends Emscripten.JSType | null,
-    > = (
+    >(
       ident: string,
       returnType: R,
       argTypes: I,
       opts?: Emscripten.CCallOpts,
-    ) => (...arg: ArgsToType<I>) => ReturnToType<R>;
+    ): (...arg: Emscripten.ArgsToType<I>) => Emscripten.ReturnToType<R>;
 
-    export type ccall<
+    ccall<
       I extends Array<Emscripten.JSType | null> | [],
       R extends Emscripten.JSType | null,
-    > = (
+    >(
       ident: string,
       returnType: R,
       argTypes: I,
       args: ArgsToType<I>,
       opts?: Emscripten.CCallOpts,
-    ) => ReturnToType<R>;
+    ): Emscripten.ReturnToType<R>;
 
-    export type setValue = (
+    setValue(
       ptr: number,
       value: any,
       type: Emscripten.CType,
       noSafe?: boolean,
-    ) => void;
-    export type getValue = (
-      ptr: number,
-      type: Emscripten.CType,
-      noSafe?: boolean,
-    ) => number;
+    ): void;
+    getValue(ptr: number, type: Emscripten.CType, noSafe?: boolean): number;
 
-    export type allocate = (
+    allocate(
       slab: number[] | ArrayBufferView | number,
       types: Emscripten.CType | Emscripten.CType[],
       allocator: number,
       ptr?: number,
-    ) => number;
+    ): number;
 
-    export type stackAlloc = (size: number) => number;
-    export type stackSave = () => number;
-    export type stackRestore = (ptr: number) => void;
+    stackAlloc(size: number): number;
+    tackSave(): number;
+    tackRestore(ptr: number): void;
 
-    export type UTF8ToString = (ptr: number, maxBytesToRead?: number) => string;
-    export type stringToUTF8 = (
-      str: string,
-      outPtr: number,
-      maxBytesToRead?: number,
-    ) => void;
-    export type lengthBytesUTF8 = (str: string) => number;
-    export type allocateUTF8 = (str: string) => number;
-    export type allocateUTF8OnStack = (str: string) => number;
-    export type UTF16ToString = (ptr: number) => string;
-    export type stringToUTF16 = (
-      str: string,
-      outPtr: number,
-      maxBytesToRead?: number,
-    ) => void;
-    export type lengthBytesUTF16 = (str: string) => number;
-    export type UTF32ToString = (ptr: number) => string;
-    export type stringToUTF32 = (
-      str: string,
-      outPtr: number,
-      maxBytesToRead?: number,
-    ) => void;
-    export type lengthBytesUTF32 = (str: string) => number;
+    UTF8ToString(ptr: number, maxBytesToRead?: number): string;
+    stringToUTF8(str: string, outPtr: number, maxBytesToRead?: number): void;
+    lengthBytesUTF8(str: string): number;
+    allocateUTF8(str: string): number;
+    allocateUTF8OnStack(str: string): number;
+    UTF16ToString(ptr: number): string;
+    stringToUTF16(str: string, outPtr: number, maxBytesToRead?: number): void;
+    lengthBytesUTF16(str: string): number;
+    UTF32ToString(ptr: number): string;
+    stringToUTF32(str: string, outPtr: number, maxBytesToRead?: number): void;
+    lengthBytesUTF32(str: string): number;
 
-    export type intArrayFromString = (
+    intArrayFromString(
       stringy: string,
       dontAddNull?: boolean,
       length?: number,
-    ) => number[];
-    export type intArrayToString = (array: number[]) => string;
-    export type writeStringToMemory = (
+    ): number[];
+    intArrayToString(array: number[]): string;
+    writeStringToMemory(
       str: string,
       buffer: number,
       dontAddNull: boolean,
-    ) => void;
-    export type writeArrayToMemory = (array: number[], buffer: number) => void;
-    export type writeAsciiToMemory = (
-      str: string,
-      buffer: number,
-      dontAddNull: boolean,
-    ) => void;
+    ): void;
+    writeArrayToMemory(array: number[], buffer: number): void;
+    writeAsciiToMemory(str: string, buffer: number, dontAddNull: boolean): void;
 
-    export type addRunDependency = (id: any) => void;
-    export type removeRunDependency = (id: any) => void;
+    addRunDependency(id: any): void;
+    removeRunDependency(id: any): void;
 
-    export type addFunction = (
-      func: (...args: any[]) => any,
-      signature?: string,
-    ) => number;
-    export type removeFunction = (funcPtr: number) => void;
+    addFunction(func: (...args: any[]) => any, signature?: string): number;
+    removeFunction(funcPtr: number): void;
 
-    export type ALLOC_NORMAL = number;
-    export type ALLOC_STACK = number;
-    export type ALLOC_STATIC = number;
-    export type ALLOC_DYNAMIC = number;
-    export type ALLOC_NONE = number;
+    ALLOC_NORMAL: number;
+    ALLOC_STACK: number;
+    ALLOC_STATIC: number;
+    ALLOC_DYNAMIC: number;
+    ALLOC_NONE: number;
   }
 }
